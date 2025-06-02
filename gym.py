@@ -47,3 +47,36 @@ def needs_premium_surcharge(plan_name: str, feature_list: list[str]) -> bool:
     if plan_name == "Premium":
         return True
     return any(ADDITIONAL_FEATURES[feat]["is_premium_feature"] for feat in feature_list)
+
+
+def calculate_subtotal(
+    plan_name: str, feature_list: list[str], num_members: int
+) -> float:
+    base = MEMBERSHIP_PLANS[plan_name]["base_cost"]
+    features_cost = sum(ADDITIONAL_FEATURES[feat]["cost"] for feat in feature_list)
+    return (base + features_cost) * num_members
+
+
+def calculate_final_cost(
+    plan_name: str, feature_list: list[str], num_members: int
+) -> dict:
+    validate_plan(plan_name)
+    validate_features(feature_list)
+    if num_members < 1:
+        raise ValidationError("Number of members must be at least 1.")
+    subtotal = calculate_subtotal(plan_name, feature_list, num_members)
+    after_group, grp_disc = apply_group_discount(subtotal, num_members)
+    after_special, spec_disc = apply_special_offer(after_group)
+    surcharge = 0.0
+    if needs_premium_surcharge(plan_name, feature_list):
+        after_special, surcharge = apply_premium_surcharge(after_special)
+    final_total = round(after_special, 2)
+    if final_total < 0:
+        raise ValidationError("Final total negative.")
+    return {
+        "subtotal": round(subtotal, 2),
+        "group_discount": round(grp_disc, 2),
+        "special_discount": round(spec_disc, 2),
+        "surcharge": round(surcharge, 2),
+        "final_total": final_total,
+    }
