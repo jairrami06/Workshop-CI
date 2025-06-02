@@ -41,3 +41,9 @@ def apply_special_offer(total_after_group: float) -> tuple[float, float]:
 def apply_premium_surcharge(total_before_surcharge: float) -> tuple[float, float]:
     surcharge = total_before_surcharge * PREMIUM_SURCHARGE_RATE
     return total_before_surcharge + surcharge, surcharge
+
+
+def needs_premium_surcharge(plan_name: str, feature_list: list[str]) -> bool:
+    if plan_name == "Premium":
+        return True
+    return any(ADDITIONAL_FEATURES[feat]["is_premium_feature"] for feat in feature_list)
