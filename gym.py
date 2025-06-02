@@ -36,3 +36,8 @@ def apply_special_offer(total_after_group: float) -> tuple[float, float]:
         if total_after_group > threshold:
             return total_after_group - discount_amt, discount_amt
     return total_after_group, 0.0
+
+
+def apply_premium_surcharge(total_before_surcharge: float) -> tuple[float, float]:
+    surcharge = total_before_surcharge * PREMIUM_SURCHARGE_RATE
+    return total_before_surcharge + surcharge, surcharge
