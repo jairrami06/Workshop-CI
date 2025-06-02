@@ -123,3 +123,38 @@ def prompt_num_members() -> int:
         print("ERROR: Must enter a positive integer ≥ 1.")
         return prompt_num_members()
     return int(raw)
+
+
+def resumen(
+    plan_name: str, feature_list: list[str], num_members: int, breakdown: dict
+) -> None:
+    return (
+        f"\n----- Membership Summary -----\n"
+        f"Plan: {plan_name}\n"
+        f"Additional Features: {', '.join(feature_list) if feature_list else 'None'}\n"
+        f"Number of Members: {num_members}\n"
+        f"Subtotal: ${breakdown['subtotal']:.2f}\n"
+        f"{f'Group Discount: -${breakdown["group_discount"]:.2f}\n' if breakdown['group_discount'] > 0 else ''}"
+        f"{f'Special Discount: -${breakdown["special_discount"]:.2f}\n' if breakdown['special_discount'] > 0 else ''}"
+        f"{f'Premium Surcharge: +${breakdown["surcharge"]:.2f}\n' if breakdown['surcharge'] > 0 else ''}"
+        f"Final Total: ${breakdown['final_total']:.2f}\n"
+        f"------------------------------"
+    )
+
+
+def confirm_and_finalize(
+    plan_name: str, feature_list: list[str], num_members: int, breakdown: dict
+) -> int:
+    s = resumen(plan_name, feature_list, num_members, breakdown)
+    a = input("Confirm membership? (y/n): ").strip().lower()
+    return (
+        int(breakdown["final_total"])
+        if a == "y"
+        and (
+            print(
+                f"Membership confirmed. Total amount due: ${breakdown['final_total']:.2f}"
+            )
+            or True
+        )
+        else (print("Membership canceled. No charges applied.") or -1)
+    )
