@@ -115,3 +115,28 @@ class TestGymLogic(unittest.TestCase):
         self.assertAlmostEqual(breakdown["surcharge"], expected_surcharge)
         expected_final = round((607.50 - 50.00) * 1.15, 2)
         self.assertAlmostEqual(breakdown["final_total"], expected_final)
+
+    def test_calculate_final_cost_invalid_plan(self):
+        with self.assertRaises(ValidationError):
+            calculate_final_cost("Gold", [], 1)
+
+    def test_calculate_final_cost_invalid_feature(self):
+        with self.assertRaises(ValidationError):
+            calculate_final_cost("Basic", ["Swimming"], 1)
+
+    def test_calculate_final_cost_invalid_num_members(self):
+        with self.assertRaises(ValidationError):
+            calculate_final_cost("Basic", [], 0)
+
+    def test_special_offer_exact_thresholds(self):
+        total1, disc1 = apply_special_offer(200.00)
+        self.assertEqual(disc1, 0.00)
+        self.assertEqual(total1, 200.00)
+
+        total2, disc2 = apply_special_offer(400.00)
+        self.assertEqual(disc2, 20.00)
+        self.assertEqual(total2, 380.00)
+
+
+if __name__ == "__main__":
+    unittest.main()
