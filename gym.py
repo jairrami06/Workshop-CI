@@ -80,3 +80,46 @@ def calculate_final_cost(
         "surcharge": round(surcharge, 2),
         "final_total": final_total,
     }
+
+
+def prompt_plan_selection() -> str:
+    display = "\n".join(
+        f"  - {n} (${i['base_cost']:.2f}): {i['description']}"
+        for n, i in MEMBERSHIP_PLANS.items()
+    )
+    print(f"Available Membership Plans:\n{display}")
+    plan = input("Enter the plan you want: ").strip()
+    try:
+        validate_plan(plan)
+    except ValidationError as e:
+        print(f"ERROR: {e}")
+        return prompt_plan_selection()
+    return plan
+
+
+def prompt_features_selection() -> list[str]:
+    display = "\n".join(
+        f"  - {n} (${i['cost']:.2f}){' (Premium Feature)' if i['is_premium_feature'] else ''}: {i['description']}"
+        for n, i in ADDITIONAL_FEATURES.items()
+    )
+    print(
+        f"\nAvailable Additional Features:\n{display}\nType feature names separated by commas, or leave empty if none."
+    )
+    raw = input("Enter features: ").strip()
+    if not raw:
+        return []
+    chosen = [f.strip() for f in raw.split(",") if f.strip()]
+    try:
+        validate_features(chosen)
+    except ValidationError as e:
+        print(f"ERROR: {e}")
+        return prompt_features_selection()
+    return chosen
+
+
+def prompt_num_members() -> int:
+    raw = input("\nEnter number of members signing up together: ").strip()
+    if not raw.isdigit() or int(raw) < 1:
+        print("ERROR: Must enter a positive integer ≥ 1.")
+        return prompt_num_members()
+    return int(raw)
