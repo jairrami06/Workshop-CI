@@ -81,3 +81,37 @@ class TestGymLogic(unittest.TestCase):
         new_total, surcharge = apply_premium_surcharge(200.0)
         self.assertAlmostEqual(surcharge, 30.0)
         self.assertAlmostEqual(new_total, 230.0) 
+        
+    def test_calculate_final_cost_basic_single(self):
+        breakdown = calculate_final_cost("Basic", [], 1)
+        self.assertEqual(breakdown["subtotal"], 100.00)
+        self.assertEqual(breakdown["group_discount"], 0.00)
+        self.assertEqual(breakdown["special_discount"], 0.00)
+        self.assertEqual(breakdown["surcharge"], 0.00)
+        self.assertEqual(breakdown["final_total"], 100.00)
+
+    def test_calculate_final_cost_group_discount_only(self):
+        breakdown = calculate_final_cost("Basic", [], 2)
+        self.assertEqual(breakdown["subtotal"], 200.00)
+        self.assertEqual(breakdown["group_discount"], 20.00)
+        self.assertEqual(breakdown["special_discount"], 0.00)
+        self.assertEqual(breakdown["surcharge"], 0.00)
+        self.assertEqual(breakdown["final_total"], 180.00)
+
+    def test_calculate_final_cost_special_and_surcharge(self):
+        breakdown = calculate_final_cost("Premium", ["Group Classes"], 1)
+        self.assertEqual(breakdown["subtotal"], 180.00)
+        self.assertEqual(breakdown["group_discount"], 0.00)
+        self.assertEqual(breakdown["special_discount"], 0.00)
+        self.assertAlmostEqual(breakdown["surcharge"], 27.00)
+        self.assertAlmostEqual(breakdown["final_total"], 207.00)
+
+    def test_calculate_final_cost_all_discounts_and_surcharge(self):
+        breakdown = calculate_final_cost("Family", ["Sauna Access"], 3)
+        self.assertEqual(breakdown["subtotal"], 675.00)
+        self.assertAlmostEqual(breakdown["group_discount"], 67.50)
+        self.assertAlmostEqual(breakdown["special_discount"], 50.00)
+        expected_surcharge = round((607.50 - 50.00) * 0.15, 2)
+        self.assertAlmostEqual(breakdown["surcharge"], expected_surcharge)
+        expected_final = round((607.50 - 50.00) * 1.15, 2)
+        self.assertAlmostEqual(breakdown["final_total"], expected_final)
