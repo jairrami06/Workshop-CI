@@ -13,6 +13,7 @@ MEMBERSHIP_PLANS = {
     },
 }
 
+
 ADDITIONAL_FEATURES = {
     "Personal Training": {
         "cost": 50.0,
