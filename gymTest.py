@@ -11,6 +11,12 @@ from gym import (
     ValidationError,
 )
 
+import xmlrunner
+
+if __name__ == '__main__':
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))
+
+
 class TestGymLogic(unittest.TestCase):
     def test_validate_plan_valid(self):
         for p in ["Basic", "Premium", "Family"]:
