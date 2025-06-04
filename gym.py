@@ -127,16 +127,31 @@ def prompt_num_members() -> int:
 
 def resumen(
     plan_name: str, feature_list: list[str], num_members: int, breakdown: dict
-) -> None:
+) -> str:
+    group_discount_str = (
+        f"Group Discount: -${breakdown['group_discount']:.2f}\n"
+        if breakdown['group_discount'] > 0
+        else ""
+    )
+    special_discount_str = (
+        f"Special Discount: -${breakdown['special_discount']:.2f}\n"
+        if breakdown['special_discount'] > 0
+        else ""
+    )
+    surcharge_str = (
+        f"Premium Surcharge: +${breakdown['surcharge']:.2f}\n"
+        if breakdown['surcharge'] > 0
+        else ""
+    )
     return (
         f"\n----- Membership Summary -----\n"
         f"Plan: {plan_name}\n"
         f"Additional Features: {', '.join(feature_list) if feature_list else 'None'}\n"
         f"Number of Members: {num_members}\n"
         f"Subtotal: ${breakdown['subtotal']:.2f}\n"
-        f"{f'Group Discount: -${breakdown["group_discount"]:.2f}\n' if breakdown['group_discount'] > 0 else ''}"
-        f"{f'Special Discount: -${breakdown["special_discount"]:.2f}\n' if breakdown['special_discount'] > 0 else ''}"
-        f"{f'Premium Surcharge: +${breakdown["surcharge"]:.2f}\n' if breakdown['surcharge'] > 0 else ''}"
+        f"{group_discount_str}"
+        f"{special_discount_str}"
+        f"{surcharge_str}"
         f"Final Total: ${breakdown['final_total']:.2f}\n"
         f"------------------------------"
     )
@@ -146,6 +161,7 @@ def confirm_and_finalize(
     plan_name: str, feature_list: list[str], num_members: int, breakdown: dict
 ) -> int:
     s = resumen(plan_name, feature_list, num_members, breakdown)
+    print(s)
     a = input("Confirm membership? (y/n): ").strip().lower()
     return (
         int(breakdown["final_total"])
