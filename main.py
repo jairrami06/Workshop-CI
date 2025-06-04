@@ -7,6 +7,7 @@ from gym import (
     ValidationError,
 )
 
+
 def main() -> int:
     try:
         plan = prompt_plan_selection()
