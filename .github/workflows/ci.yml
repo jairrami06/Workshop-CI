@@ -18,17 +18,15 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install dependencies and run tests
         run: |
           python -m venv env
           source env/bin/activate
-          pip install -r requirements.txt || true
-          pip install unittest-xml-reporting
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install xmlrunner
 
-      - name: Run unittests and output JUnit XML
-        run: |
-          source env/bin/activate
-          python -m xmlrunner discover -o test-reports
+          python -m xmlrunner gymTest.py -o test-reports
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
