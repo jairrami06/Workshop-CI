@@ -11,7 +11,6 @@ from gym import (
     ValidationError,
 )
 
-
 class TestGymLogic(unittest.TestCase):
     def test_validate_plan_valid(self):
         for p in ["Basic", "Premium", "Family"]:
