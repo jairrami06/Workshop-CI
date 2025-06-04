@@ -13,9 +13,6 @@ from gym import (
 
 import xmlrunner
 
-if __name__ == '__main__':
-    unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))
-
 
 class TestGymLogic(unittest.TestCase):
     def test_validate_plan_valid(self):
@@ -143,5 +140,5 @@ class TestGymLogic(unittest.TestCase):
         self.assertEqual(total2, 380.00)
 
 
-if __name__ == "__main__":
-    unittest.main()
+if __name__ == '__main__':
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))
