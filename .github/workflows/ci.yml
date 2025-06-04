@@ -1,4 +1,4 @@
-name: Lint on PR to Main
+name: CI - Test Pull Requests
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,9 +22,15 @@ jobs:
         run: |
           python -m venv env
           source env/bin/activate
-          pip install -r requirements.txt || pip install pylint
+          pip install -r requirements.txt || pip install unittest-xml-reporting
 
-      - name: Run pylint
+      - name: Run unittests and output JUnit XML
         run: |
           source env/bin/activate
-          pylint $(git ls-files '*.py')
+          python -m xmlrunner discover -o test-reports
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-test-results
+          path: test-reports/
