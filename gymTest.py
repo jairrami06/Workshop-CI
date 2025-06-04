@@ -140,5 +140,6 @@ class TestGymLogic(unittest.TestCase):
         self.assertEqual(total2, 380.00)
 
 
-if __name__ == '__main__':
-    unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))
+if __name__ == "__main__":
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="test-reports"))
+
